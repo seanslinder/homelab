@@ -1,0 +1,78 @@
+{
+	admin off
+}
+
+(authelia_gate) {
+	forward_auth authelia:9091 {
+		uri /authelia/api/authz/forward-auth
+		copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
+	}
+}
+
+# HTTP → HTTPS
+http://{$HOMELAB_FQDN:lenovo.netbird.cloud}, http://dashdot.{$HOMELAB_FQDN:lenovo.netbird.cloud}, http://termix.{$HOMELAB_FQDN:lenovo.netbird.cloud}, http://immich.{$HOMELAB_FQDN:lenovo.netbird.cloud}, http://siyuan.{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	redir https://{host}{uri} permanent
+}
+
+# Homepage + Vaultwarden + Authelia
+{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	tls internal
+
+	handle /vaultwarden* {
+		reverse_proxy vaultwarden:80
+	}
+
+	handle /authelia* {
+		reverse_proxy authelia:9091
+	}
+
+	route {
+		import authelia_gate
+		reverse_proxy homepage:3000
+	}
+}
+
+dashdot.{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	tls internal
+	import authelia_gate
+	reverse_proxy dashdot:3001
+}
+
+termix.{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	tls internal
+	import authelia_gate
+	reverse_proxy termix:8080
+}
+
+immich.{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	tls internal
+	request_body {
+		max_size 0
+	}
+	reverse_proxy immich_server:2283
+}
+
+siyuan.{$HOMELAB_FQDN:lenovo.netbird.cloud} {
+	tls internal
+
+	# WebSocket: Authelia forward_auth ломает Upgrade (302 вместо 101)
+	@siyuan_ws path /ws*
+	handle @siyuan_ws {
+		reverse_proxy siyuan:6806 {
+			header_up Host {http.request.host}
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {http.request.host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	handle {
+		import authelia_gate
+		reverse_proxy siyuan:6806 {
+			header_up Host {http.request.host}
+			header_up X-Forwarded-Proto {scheme}
+			header_up X-Forwarded-Host {http.request.host}
+			header_up X-Real-IP {remote_host}
+		}
+	}
+}

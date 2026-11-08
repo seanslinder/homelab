@@ -1,0 +1,38 @@
+# Группа для системных утилит и мониторинга
+- Системные сервисы:
+    - Dashdot:
+        icon: dashdot.png
+        href: "https://dashdot.lenovo.netbird.cloud"
+        description: Мониторинг ресурсов сервера
+        server: my-docker-server
+        container: dashdot
+
+    - Termix (Terminal):
+        icon: terminal.png
+        href: "https://termix.lenovo.netbird.cloud"
+        description: Веб-терминал для управления
+        container: termix
+
+# Группа для работы с данными, фото и заметками
+- Личные сервисы:
+    - Immich:
+        icon: immich.png
+        href: "https://immich.lenovo.netbird.cloud"
+        description: Фото-хостинг и бэкапы
+        container: immich_server
+        widget:
+            type: immich
+            url: https://immich.lenovo.netbird.cloud
+            key: "g89BV4chLH1KCAVMjt3FP6da345klGoqiDi2MPBrTSY"
+            version: 2
+
+    - SiYuan:
+        icon: siyuan.png
+        href: "https://siyuan.lenovo.netbird.cloud"
+        description: База знаний и заметки
+        container: siyuan
+
+    - VaultWarden:
+        icon: vaultwarden.png
+        href: "https://lenovo.netbird.cloud/vaultwarden/"
+        description: Менеджер паролей

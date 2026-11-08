@@ -1,0 +1,2 @@
+my-docker-server:
+  socket: /var/run/docker.sock

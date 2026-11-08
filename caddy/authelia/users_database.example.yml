@@ -1,0 +1,9 @@
+---
+users:
+  homelab:
+    disabled: false
+    displayname: Homelab
+    password: "$argon2id$v=19$m=65536,t=3,p=4$..." # REPLACE_WITH_HASH
+    email: homelab@local
+    groups:
+      - admins

@@ -1,0 +1,23 @@
+services:
+  siyuan:
+    image: b3log/siyuan
+    container_name: siyuan
+    restart: unless-stopped
+    volumes:
+      - ./workspace:/siyuan/workspace
+    # Порт 6806 только внутри Docker; с хоста — через Caddy (сеть homelab).
+    expose:
+      - "6806"
+    environment:
+      # Обязательное требование Docker-образа; вход снаружи — через Authelia на Caddy.
+      SIYUAN_ACCESS_AUTH_CODE_BYPASS: "true"
+    command:
+      - serve
+      - --workspace=/siyuan/workspace
+    networks:
+      - default
+      - homelab
+
+networks:
+  homelab:
+    external: true

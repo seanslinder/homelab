@@ -1,0 +1,61 @@
+---
+theme: auto
+
+server:
+  address: 'tcp://0.0.0.0:9091/authelia'
+  endpoints:
+    authz:
+      forward-auth:
+        implementation: 'ForwardAuth'
+
+log:
+  level: info
+
+totp:
+  issuer: homelab
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    password:
+      algorithm: argon2
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: 'lenovo.netbird.cloud'
+      resources:
+        - '^/authelia.*'
+      policy: bypass
+    - domain: 'lenovo.netbird.cloud'
+      resources:
+        - '^/vaultwarden.*'
+      policy: bypass
+    - domain: 'immich.lenovo.netbird.cloud'
+      policy: bypass
+    - domain: 'lenovo.netbird.cloud'
+      policy: one_factor
+    - domain: 'dashdot.lenovo.netbird.cloud'
+      policy: one_factor
+    - domain: 'termix.lenovo.netbird.cloud'
+      policy: one_factor
+    - domain: 'siyuan.lenovo.netbird.cloud'
+      policy: one_factor
+
+session:
+  name: authelia_session
+  same_site: lax
+  expiration: 12h
+  inactivity: 6h
+  cookies:
+    - domain: lenovo.netbird.cloud
+      authelia_url: https://lenovo.netbird.cloud/authelia
+      default_redirection_url: https://lenovo.netbird.cloud/
+
+storage:
+  local:
+    path: /config/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /config/notification.txt

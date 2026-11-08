@@ -1,0 +1,18 @@
+# Data directories
+*/data/
+*/workspace/
+*/postgres/
+*/redis/
+*/vw-data/
+model-cache/
+caddy_data/
+caddy_config/
+termix-data/
+
+# Secrets and environment files
+.env
+*.env
+!*.env.example
+secrets/
+users_database.yml
+!users_database.example.yml
